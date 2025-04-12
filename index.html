@@ -299,13 +299,6 @@
     </style>
 </head>
 <body class="p-4 flex flex-col min-h-screen light:text-gray-800 dark:text-gray-100 transition-colors" style="background-image: url('fondo.png'); background-size: cover;">
-    <!-- Elemento de audio para reproducir el sonido cuando termina el tiempo -->
-    <!-- IMPORTANTE: Debes reemplazar "ruta-a-tu-archivo.mp3" con la ruta a tu archivo de audio -->
-    <audio id="timer-end-sound">
-        <source src="audio.ogg" type="audio/mpeg">
-        <!-- Mensaje de fallback si el navegador no soporta el elemento audio -->
-        Tu navegador no soporta el elemento de audio.
-    </audio>
     <audio id="background-sound">
         <source src="background.mp3" type="audio/mpeg">
         <!-- Mensaje de fallback si el navegador no soporta el elemento audio -->
@@ -537,7 +530,6 @@
             const cancelThanksBtn = document.getElementById('cancel-thanks-btn');
             const continueWithoutBtn = document.getElementById('continue-without-btn');
             const currentTurnContainer = document.getElementById('current-turn-container');
-            const timerEndSound = document.getElementById('timer-end-sound');
             const backgroundSound = document.getElementById('background-sound');
             
             // Configuración del tema
@@ -921,30 +913,6 @@
                 });
             }
             
-            // Función para reproducir el sonido cuando termina el tiempo
-            function playTimerEndSound() {
-                // Intentar reproducir el sonido
-                try {
-                    // Reiniciar el audio para asegurarse de que comienza desde el principio
-                    timerEndSound.currentTime = 0;
-                    
-                    // Reproducir el sonido
-                    const playPromise = timerEndSound.play();
-                    
-                    // Manejar posibles errores o promesas rechazadas
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.error('Error al reproducir el sonido:', error);
-                            // Si hay un error al reproducir el sonido, mostrar una alerta visual
-                            flashTimeUpVisualAlert();
-                        });
-                    }
-                } catch (e) {
-                    console.error('Error al intentar reproducir el sonido:', e);
-                    // Si hay una excepción, mostrar una alerta visual
-                    flashTimeUpVisualAlert();
-                }
-            }
             
             function playBackgroundSound() {
                 // Intentar reproducir el sonido
@@ -994,9 +962,6 @@
                     
                     if (secondsLeft <= 0) {
                         clearInterval(timerInterval);
-                        
-                        // Reproducir sonido cuando termina el tiempo
-                        playTimerEndSound();
                         
                         // También mostrar alerta visual como respaldo
                         flashTimeUpVisualAlert();
