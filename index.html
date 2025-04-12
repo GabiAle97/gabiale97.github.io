@@ -3,17 +3,17 @@
 <html lang="es" class="light">
 <head>
     <!--
-    Copyright © Gabriel Alejandro Pereyra 2025. Todos los derechos reservados.
-    "Ronda de Mate" - Aplicación para controlar rondas de mate
-    Versión 1.0
+    Copyright Â© Gabriel Alejandro Pereyra 2025. Todos los derechos reservados.
+    "Ronda de Mate" - AplicaciÃ³n para controlar rondas de mate
+    VersiÃ³n 1.0
     
-    Esta aplicación, incluyendo su código fuente, diseño, funcionalidad, concepto y elementos visuales, 
-    está protegida por leyes de propiedad intelectual y derechos de autor. Queda prohibida la reproducción, 
-    distribución, modificación, ingeniería inversa, o creación de obras derivadas sin autorización 
+    Esta aplicaciÃ³n, incluyendo su cÃ³digo fuente, diseÃ±o, funcionalidad, concepto y elementos visuales, 
+    estÃ¡ protegida por leyes de propiedad intelectual y derechos de autor. Queda prohibida la reproducciÃ³n, 
+    distribuciÃ³n, modificaciÃ³n, ingenierÃ­a inversa, o creaciÃ³n de obras derivadas sin autorizaciÃ³n 
     expresa por escrito del autor.
     
     Desarrollado en Argentina.
-    Fecha de creación: 10 de abril de 2025
+    Fecha de creaciÃ³n: 10 de abril de 2025
     -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,8 +34,8 @@
                             dark: '#1F2937'   // Gris oscuro
                         },
                         accent: {
-                            light: '#2563EB', // Azul más oscuro
-                            dark: '#7C3AED'   // Violeta más oscuro
+                            light: '#2563EB', // Azul mÃ¡s oscuro
+                            dark: '#7C3AED'   // Violeta mÃ¡s oscuro
                         }
                     }
                 }
@@ -187,7 +187,7 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        /* Logo y título superpuestos - Modificado para moverlo a la derecha */
+        /* Logo y tÃ­tulo superpuestos - Modificado para moverlo a la derecha */
         .logo-title-container {
             position: relative;
             width: 100%;
@@ -234,7 +234,7 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         
-        /* Estilos para el micrófono */
+        /* Estilos para el micrÃ³fono */
         .mic-button {
             position: relative;
             display: inline-flex;
@@ -263,7 +263,7 @@
             }
         }
         
-        /* Modal para preguntar quién dijo gracias */
+        /* Modal para preguntar quiÃ©n dijo gracias */
         .thanks-modal {
             display: none;
             position: fixed;
@@ -286,7 +286,7 @@
             overflow-y: auto;
         }
         
-        /* Animación para el tiempo agotado */
+        /* AnimaciÃ³n para el tiempo agotado */
         @keyframes timeUpFlash {
             0% { background-color: rgba(239, 68, 68, 0.2); }
             50% { background-color: rgba(239, 68, 68, 0.5); }
@@ -309,7 +309,7 @@
         <div class="max-w-md mx-auto card-container bg-white/90 dark:bg-gray-800/90 rounded-xl shadow-md overflow-hidden md:max-w-2xl transition-colors">
             <div class="bg-primary-light dark:bg-primary-dark text-white p-4 flex justify-between items-center transition-colors">
                 <div class="flex-grow text-center">
-                     <!-- Logo y título superpuestos -->
+                     <!-- Logo y tÃ­tulo superpuestos -->
                     <div class="logo-title-container mt-4">
                         <img src="logo.png" class="logo-placeholder">
                         <div class="title-overlay">
@@ -334,12 +334,12 @@
             </div>
             
             <div class="p-6">
-                <!-- Configuración inicial -->
+                <!-- ConfiguraciÃ³n inicial -->
                 <div id="setup" class="space-y-4">
                     <h2 class="text-xl font-semibold text-primary-light dark:text-primary-dark transition-colors">Configurar Ronda</h2>
                     
                     <div id="participants-container" class="space-y-3">
-                        <!-- Los participantes se generarán aquí -->
+                        <!-- Los participantes se generarÃ¡n aquÃ­ -->
                     </div>
                     
                     <div class="flex justify-center">
@@ -353,7 +353,7 @@
                     
                     <div class="flex justify-between items-center mt-4">
                         <button id="start-btn" class="bg-primary-light dark:bg-primary-dark hover:bg-accent-light dark:hover:bg-accent-dark text-white font-bold py-2 px-6 rounded-full transition-colors">
-                            ¡Comenzar Ronda!
+                            Â¡Comenzar Ronda!
                         </button>
                         <div class="flex items-center">
                             <span class="mr-2">Tiempo por turno:</span>
@@ -403,28 +403,28 @@
                             </button>
                         </div>
                         
-                        <!-- Indicador de micrófono activo -->
+                        <!-- Indicador de micrÃ³fono activo -->
                         <div id="mic-indicator" class="mic-indicator mt-3 mx-auto w-max">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
                             </svg>
-                            <span class="text-xs text-red-500">Micrófono activo - Di "gracias" cuando termines</span>
+                            <span class="text-xs text-red-500">MicrÃ³fono activo - Di "gracias" cuando termines</span>
                         </div>
                     </div>
                     
                     <div class="mt-4">
                         <h3 class="font-medium mb-2">Cola de espera:</h3>
                         <div id="queue-display" class="flex flex-wrap gap-2">
-                            <!-- La cola se generará aquí -->
+                            <!-- La cola se generarÃ¡ aquÃ­ -->
                         </div>
                     </div>
                 </div>
                 
-                <!-- Estadísticas (inicialmente ocultas) -->
+                <!-- EstadÃ­sticas (inicialmente ocultas) -->
                 <div id="stats" class="hidden mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 transition-colors">
-                    <h3 class="font-medium mb-2">Estadísticas:</h3>
+                    <h3 class="font-medium mb-2">EstadÃ­sticas:</h3>
                     <div id="stats-container" class="text-sm space-y-1">
-                        <!-- Las estadísticas se generarán aquí -->
+                        <!-- Las estadÃ­sticas se generarÃ¡n aquÃ­ -->
                     </div>
                 </div>
             </div>
@@ -434,23 +434,23 @@
     <!-- Footer con copyright -->
     <footer class="mt-6 text-center text-sm text-gray-800 dark:text-gray-300 transition-colors">
         <div class="max-w-md mx-auto p-2 border-t border-gray-200 dark:border-gray-700 transition-colors">
-            <p>© 2025 Ronda de Mate. Todos los derechos reservados.</p>
+            <p>Â© 2025 Ronda de Mate. Todos los derechos reservados.</p>
             <button id="copyright-info-btn" class="text-primary-light dark:text-primary-dark hover:text-accent-light dark:hover:text-accent-dark text-xs mt-1 transition-colors">
-                Ver información legal
+                Ver informaciÃ³n legal
             </button>
         </div>
     </footer>
 
-    <!-- Modal de información de copyright -->
+    <!-- Modal de informaciÃ³n de copyright -->
     <div id="copyright-modal" class="copyright-modal">
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-4 transition-colors">
-            <h3 class="text-xl font-bold text-primary-light dark:text-primary-dark mb-4 transition-colors">Información Legal</h3>
+            <h3 class="text-xl font-bold text-primary-light dark:text-primary-dark mb-4 transition-colors">InformaciÃ³n Legal</h3>
             <div class="text-sm space-y-3">
-                <p><strong>Copyright © Gabriel Alejandro Pereyra 2025. Todos los derechos reservados.</strong></p>
-                <p>"Ronda de Mate" - Aplicación para controlar rondas de mate<br>Versión 1.0</p>
-                <p>Esta aplicación, incluyendo su código fuente, diseño, funcionalidad, concepto y elementos visuales, está protegida por leyes de propiedad intelectual y derechos de autor.</p>
-                <p>Queda prohibida la reproducción, distribución, modificación, ingeniería inversa, o creación de obras derivadas sin autorización expresa por escrito del autor.</p>
-                <p>Desarrollado en Argentina.<br>Fecha de creación: 10 de abril de 2025</p>
+                <p><strong>Copyright Â© Gabriel Alejandro Pereyra 2025. Todos los derechos reservados.</strong></p>
+                <p>"Ronda de Mate" - AplicaciÃ³n para controlar rondas de mate<br>VersiÃ³n 1.0</p>
+                <p>Esta aplicaciÃ³n, incluyendo su cÃ³digo fuente, diseÃ±o, funcionalidad, concepto y elementos visuales, estÃ¡ protegida por leyes de propiedad intelectual y derechos de autor.</p>
+                <p>Queda prohibida la reproducciÃ³n, distribuciÃ³n, modificaciÃ³n, ingenierÃ­a inversa, o creaciÃ³n de obras derivadas sin autorizaciÃ³n expresa por escrito del autor.</p>
+                <p>Desarrollado en Argentina.<br>Fecha de creaciÃ³n: 10 de abril de 2025</p>
             </div>
             <div class="mt-6 text-center">
                 <button id="close-copyright-btn" class="bg-primary-light dark:bg-primary-dark hover:bg-accent-light dark:hover:bg-accent-dark text-white font-medium py-2 px-4 rounded transition-colors">
@@ -460,14 +460,14 @@
         </div>
     </div>
 
-    <!-- Modal para preguntar quién dijo gracias -->
+    <!-- Modal para preguntar quiÃ©n dijo gracias -->
     <div id="thanks-modal" class="thanks-modal">
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-4 transition-colors thanks-modal-content">
-            <h3 class="text-xl font-bold text-primary-light dark:text-primary-dark mb-4 transition-colors">¿Quién dijo gracias?</h3>
-            <p class="mb-4">Selecciona quién terminó su mate:</p>
+            <h3 class="text-xl font-bold text-primary-light dark:text-primary-dark mb-4 transition-colors">Â¿QuiÃ©n dijo gracias?</h3>
+            <p class="mb-4">Selecciona quiÃ©n terminÃ³ su mate:</p>
             
             <div id="thanks-participants" class="space-y-2 max-h-60 overflow-y-auto mb-4">
-                <!-- Aquí se generarán los participantes -->
+                <!-- AquÃ­ se generarÃ¡n los participantes -->
             </div>
             
             <div class="mt-6 flex justify-between">
@@ -532,7 +532,7 @@
             const currentTurnContainer = document.getElementById('current-turn-container');
             const backgroundSound = document.getElementById('background-sound');
             
-            // Configuración del tema
+            // ConfiguraciÃ³n del tema
             function setTheme(isDark) {
                 if (isDark) {
                     htmlElement.classList.add('dark');
@@ -576,7 +576,7 @@
                 }
             });
             
-            // Inicializar reconocimiento de voz si está disponible
+            // Inicializar reconocimiento de voz si estÃ¡ disponible
             function initSpeechRecognition() {
                 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -607,7 +607,7 @@
                     
                     return true;
                 } else {
-                    console.warn('El reconocimiento de voz no está soportado en este navegador');
+                    console.warn('El reconocimiento de voz no estÃ¡ soportado en este navegador');
                     micIndicator.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
@@ -626,7 +626,7 @@
                     } catch (e) {
                         console.error('Error al iniciar el reconocimiento de voz:', e);
                         
-                        // Si hay un error al iniciar, intentar reiniciar después de un tiempo
+                        // Si hay un error al iniciar, intentar reiniciar despuÃ©s de un tiempo
                         if (roundActive && recognitionRetryCount < MAX_RETRY_COUNT) {
                             recognitionRetryCount++;
                             setTimeout(() => {
@@ -649,7 +649,7 @@
                 micIndicator.style.display = 'none';
             }
             
-            // Mostrar modal para seleccionar quién dijo gracias
+            // Mostrar modal para seleccionar quiÃ©n dijo gracias
             function showThanksModal() {
                 thanksParticipants.innerHTML = '';
                 
@@ -679,10 +679,10 @@
                 const confirmDiv = document.createElement('div');
                 confirmDiv.className = 'text-center';
                 confirmDiv.innerHTML = `
-                    <p class="mb-4">¿<strong>${person.name}</strong> desea abandonar la ronda?</p>
+                    <p class="mb-4">Â¿<strong>${person.name}</strong> desea abandonar la ronda?</p>
                     <div class="flex justify-center space-x-4">
                         <button id="leave-yes-btn" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition-colors">
-                            Sí, abandonar
+                            SÃ­, abandonar
                         </button>
                         <button id="leave-no-btn" class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded transition-colors">
                             No, continuar
@@ -706,7 +706,7 @@
             function removeParticipantFromRound(id) {
                 // Verificar que queden al menos 2 participantes
                 if (participants.length <= 2) {
-                    alert("No se puede eliminar más participantes. Se necesitan al menos 2 para continuar la ronda.");
+                    alert("No se puede eliminar mÃ¡s participantes. Se necesitan al menos 2 para continuar la ronda.");
                     return;
                 }
                 
@@ -717,7 +717,7 @@
                         nextPerson();
                     }
                     
-                    // Ajustar el índice actual si es necesario
+                    // Ajustar el Ã­ndice actual si es necesario
                     if (index < currentIndex) {
                         currentIndex--;
                     }
@@ -725,7 +725,7 @@
                     // Eliminar el participante
                     participants.splice(index, 1);
                     
-                    // Asegurarse de que el índice actual sea válido
+                    // Asegurarse de que el Ã­ndice actual sea vÃ¡lido
                     if (currentIndex >= participants.length) {
                         currentIndex = 0;
                     }
@@ -746,7 +746,7 @@
                     participantDiv.className = 'participant-card flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-3 bg-secondary-light dark:bg-gray-700 rounded-lg relative transition-colors';
                     participantDiv.dataset.id = participant.id;
                     
-                    // Solo mostrar botón de eliminar si hay más de 2 participantes
+                    // Solo mostrar botÃ³n de eliminar si hay mÃ¡s de 2 participantes
                     const removeButton = participants.length > 2 ? 
                         `<button class="remove-participant absolute top-2 right-2 text-red-500 hover:text-red-700" data-id="${participant.id}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -815,12 +815,12 @@
                 // No permitir menos de 2 participantes
                 if (participants.length <= 2) return;
                 
-                // Encontrar el elemento y agregar animación
+                // Encontrar el elemento y agregar animaciÃ³n
                 const participantEl = document.querySelector(`.participant-card[data-id="${id}"]`);
                 if (participantEl) {
                     participantEl.classList.add('removing');
                     
-                    // Esperar a que termine la animación
+                    // Esperar a que termine la animaciÃ³n
                     setTimeout(() => {
                         const index = participants.findIndex(p => p.id === id);
                         if (index !== -1) {
@@ -869,7 +869,7 @@
                 playBackgroundSound();
                 roundActive = true;
                 
-                // Inicializar y activar reconocimiento de voz automáticamente
+                // Inicializar y activar reconocimiento de voz automÃ¡ticamente
                 if (initSpeechRecognition()) {
                     startListening();
                 }
@@ -898,7 +898,7 @@
                 }
             }
             
-            // Actualizar estadísticas
+            // Actualizar estadÃ­sticas
             function updateStats() {
                 statsContainer.innerHTML = '';
                 
@@ -933,7 +933,7 @@
                     }
                 } catch (e) {
                     console.error('Error al intentar reproducir el sonido:', e);
-                    // Si hay una excepción, mostrar una alerta visual
+                    // Si hay una excepciÃ³n, mostrar una alerta visual
                     flashTimeUpVisualAlert();
                 }
             }
@@ -942,7 +942,7 @@
             function flashTimeUpVisualAlert() {
                 currentTurnContainer.classList.add('time-up-flash');
                 
-                // Quitar la clase después de la animación
+                // Quitar la clase despuÃ©s de la animaciÃ³n
                 setTimeout(() => {
                     currentTurnContainer.classList.remove('time-up-flash');
                 }, 1500); // 3 flashes de 0.5s cada uno
@@ -963,7 +963,7 @@
                     if (secondsLeft <= 0) {
                         clearInterval(timerInterval);
                         
-                        // También mostrar alerta visual como respaldo
+                        // TambiÃ©n mostrar alerta visual como respaldo
                         flashTimeUpVisualAlert();
                         
                         // Esperar un momento antes de avanzar al siguiente
@@ -973,13 +973,13 @@
                 }, 1000);
             }
             
-            // Actualizar visualización del temporizador
+            // Actualizar visualizaciÃ³n del temporizador
             function updateTimerDisplay() {
                 timerDisplay.textContent = `${secondsLeft}s`;
                 const percentage = (secondsLeft / parseInt(turnTimeSelect.value)) * 100;
                 timerBar.style.width = `${percentage}%`;
                 
-                // Cambiar color según el tiempo restante
+                // Cambiar color segÃºn el tiempo restante
                 if (percentage > 60) {
                     timerBar.classList.remove('bg-yellow-500', 'bg-red-500');
                     timerBar.classList.add('bg-primary-light', 'dark:bg-primary-dark');
@@ -1001,7 +1001,7 @@
                 startTimer();
             }
             
-            // Reiniciar la aplicación
+            // Reiniciar la aplicaciÃ³n
             function resetApp() {
                 clearInterval(timerInterval);
                 stopListening();
@@ -1009,7 +1009,7 @@
                 // Reiniciar contadores
                 participants.forEach(p => p.turns = 0);
                 
-                // Volver a la configuración
+                // Volver a la configuraciÃ³n
                 setupDiv.classList.remove('hidden');
                 roundDiv.classList.add('hidden');
                 statsDiv.classList.add('hidden');
@@ -1039,7 +1039,7 @@
                 }
             });
             
-            // Ocultar el indicador de micrófono inicialmente
+            // Ocultar el indicador de micrÃ³fono inicialmente
             micIndicator.style.display = 'none';
             
             // Inicializar
