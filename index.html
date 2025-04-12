@@ -1,0 +1,1124 @@
+
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+    <!--
+    Copyright © Gabriel Alejandro Pereyra 2025. Todos los derechos reservados.
+    "Ronda de Mate" - Aplicación para controlar rondas de mate
+    Versión 1.0
+    
+    Esta aplicación, incluyendo su código fuente, diseño, funcionalidad, concepto y elementos visuales, 
+    está protegida por leyes de propiedad intelectual y derechos de autor. Queda prohibida la reproducción, 
+    distribución, modificación, ingeniería inversa, o creación de obras derivadas sin autorización 
+    expresa por escrito del autor.
+    
+    Desarrollado en Argentina.
+    Fecha de creación: 10 de abril de 2025
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ronda de Mate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            light: '#3B82F6', // Azul
+                            dark: '#8B5CF6'   // Violeta
+                        },
+                        secondary: {
+                            light: '#EFF6FF', // Azul muy claro
+                            dark: '#1F2937'   // Gris oscuro
+                        },
+                        accent: {
+                            light: '#2563EB', // Azul más oscuro
+                            dark: '#7C3AED'   // Violeta más oscuro
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Satisfy&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dark body::before {
+            background-color: rgba(17, 24, 39, 0.9);
+        }
+        
+        .app-title {
+            font-family: 'Amatic SC', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        .mate-icon {
+            font-size: 2rem;
+        }
+        
+        .active-person {
+            transform: scale(1.05);
+        }
+        
+        .timer-progress {
+            transition: width 1s linear;
+        }
+        
+        .participant-card {
+            transition: all 0.3s ease;
+        }
+        
+        .participant-card.removing {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+        
+        .copyright-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .copyright-modal.active {
+            display: flex;
+        }
+        
+        .main-container {
+            flex: 1;
+        }
+        
+        footer {
+            margin-top: auto;
+        }
+        
+        /* Toggle switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #8B5CF6;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Transiciones suaves */
+        .transition-colors {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .card-container {
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .card-container {
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Logo y título superpuestos - Modificado para moverlo a la derecha */
+        .logo-title-container {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            padding-right: 50px; /* Mismo ancho que el switch (50px) */
+        }
+        
+        .logo-placeholder {
+            width: 256px;
+            height: 256px;
+            background-color: #e0e0e000;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+            text-align: center;
+            position: absolute;
+            z-index: 1;
+        }
+        
+        .dark .logo-placeholder {
+            background-color: #4b556300;
+            color: #e0e0e0;
+        }
+        
+        .title-overlay {
+            position: absolute;
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .title-overlay .app-title {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .dark .title-overlay .app-title {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        /* Estilos para el micrófono */
+        .mic-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .mic-button.listening {
+            animation: pulse 1.5s infinite;
+        }
+        
+        .mic-button.listening svg {
+            fill: #ef4444;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* Modal para preguntar quién dijo gracias */
+        .thanks-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .thanks-modal.active {
+            display: flex;
+        }
+        
+        .thanks-modal-content {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        /* Animación para el tiempo agotado */
+        @keyframes timeUpFlash {
+            0% { background-color: rgba(239, 68, 68, 0.2); }
+            50% { background-color: rgba(239, 68, 68, 0.5); }
+            100% { background-color: rgba(239, 68, 68, 0.2); }
+        }
+        
+        .time-up-flash {
+            animation: timeUpFlash 0.5s ease-in-out 3;
+        }
+    </style>
+</head>
+<body class="p-4 flex flex-col min-h-screen light:text-gray-800 dark:text-gray-100 transition-colors" style="background-image: url('fondo.png'); background-size: cover;">
+    <!-- Elemento de audio para reproducir el sonido cuando termina el tiempo -->
+    <!-- IMPORTANTE: Debes reemplazar "ruta-a-tu-archivo.mp3" con la ruta a tu archivo de audio -->
+    <audio id="timer-end-sound">
+        <source src="audio.ogg" type="audio/mpeg">
+        <!-- Mensaje de fallback si el navegador no soporta el elemento audio -->
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    <audio id="background-sound">
+        <source src="background.mp3" type="audio/mpeg">
+        <!-- Mensaje de fallback si el navegador no soporta el elemento audio -->
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+    
+    <div class="main-container flex-grow">
+        <div class="max-w-md mx-auto card-container bg-white/90 dark:bg-gray-800/90 rounded-xl shadow-md overflow-hidden md:max-w-2xl transition-colors">
+            <div class="bg-primary-light dark:bg-primary-dark text-white p-4 flex justify-between items-center transition-colors">
+                <div class="flex-grow text-center">
+                     <!-- Logo y título superpuestos -->
+                    <div class="logo-title-container mt-4">
+                        <img src="logo.png" class="logo-placeholder">
+                        <div class="title-overlay">
+                            <h1 class="app-title text-primary-dark dark:text-primary-light drop-shadow-[0_0_2.1px_black]">Ronda de Mate</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="mr-2 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline dark:hidden" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline hidden dark:inline" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                        </svg>
+                    </span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <!-- Configuración inicial -->
+                <div id="setup" class="space-y-4">
+                    <h2 class="text-xl font-semibold text-primary-light dark:text-primary-dark transition-colors">Configurar Ronda</h2>
+                    
+                    <div id="participants-container" class="space-y-3">
+                        <!-- Los participantes se generarán aquí -->
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <button id="add-participant-btn" class="flex items-center bg-secondary-light dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-gray-600 text-primary-light dark:text-primary-dark font-medium py-2 px-4 rounded-full transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                            Agregar Participante
+                        </button>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mt-4">
+                        <button id="start-btn" class="bg-primary-light dark:bg-primary-dark hover:bg-accent-light dark:hover:bg-accent-dark text-white font-bold py-2 px-6 rounded-full transition-colors">
+                            ¡Comenzar Ronda!
+                        </button>
+                        <div class="flex items-center">
+                            <span class="mr-2">Tiempo por turno:</span>
+                            <select id="turn-time" class="border dark:border-gray-600 rounded p-1 bg-white dark:bg-gray-700 transition-colors">
+                                <option value="30">30 seg</option>
+                                <option value="45">45 seg</option>
+                                <option value="60" selected>60 seg</option>
+                                <option value="90">90 seg</option>
+                                <option value="120">2 min</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ronda en progreso (inicialmente oculta) -->
+                <div id="round-in-progress" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-primary-light dark:text-primary-dark transition-colors">Ronda en Progreso</h2>
+                        <button id="reset-btn" class="text-sm bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded transition-colors">
+                            Reiniciar
+                        </button>
+                    </div>
+                    
+                    <div id="current-turn-container" class="bg-secondary-light dark:bg-gray-700 p-4 rounded-lg border border-blue-100 dark:border-gray-600 transition-colors">
+                        <div class="text-center mb-3">
+                            <p class="text-lg">Turno de:</p>
+                            <p id="current-person" class="text-2xl font-bold text-primary-light dark:text-primary-dark transition-colors"></p>
+                            <p id="preference-display" class="text-sm italic"></p>
+                        </div>
+                        
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div>
+                                    <span id="timer-display" class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-primary-light dark:text-primary-dark bg-blue-100 dark:bg-gray-600 transition-colors">
+                                        60s
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-100 dark:bg-gray-600 transition-colors">
+                                <div id="timer-bar" class="timer-progress shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary-light dark:bg-primary-dark transition-colors w-full"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center">
+                            <button id="next-btn" class="bg-primary-light dark:bg-primary-dark hover:bg-accent-light dark:hover:bg-accent-dark text-white font-bold py-2 px-6 rounded-full transition-colors">
+                                Siguiente ?
+                            </button>
+                        </div>
+                        
+                        <!-- Indicador de micrófono activo -->
+                        <div id="mic-indicator" class="mic-indicator mt-3 mx-auto w-max">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-xs text-red-500">Micrófono activo - Di "gracias" cuando termines</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h3 class="font-medium mb-2">Cola de espera:</h3>
+                        <div id="queue-display" class="flex flex-wrap gap-2">
+                            <!-- La cola se generará aquí -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Estadísticas (inicialmente ocultas) -->
+                <div id="stats" class="hidden mt-6 pt-4 border-t border-gray-200 dark:border-gray-700 transition-colors">
+                    <h3 class="font-medium mb-2">Estadísticas:</h3>
+                    <div id="stats-container" class="text-sm space-y-1">
+                        <!-- Las estadísticas se generarán aquí -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer con copyright -->
+    <footer class="mt-6 text-center text-sm text-gray-800 dark:text-gray-300 transition-colors">
+        <div class="max-w-md mx-auto p-2 border-t border-gray-200 dark:border-gray-700 transition-colors">
+            <p>© 2025 Ronda de Mate. Todos los derechos reservados.</p>
+            <button id="copyright-info-btn" class="text-primary-light dark:text-primary-dark hover:text-accent-light dark:hover:text-accent-dark text-xs mt-1 transition-colors">
+                Ver información legal
+            </button>
+        </div>
+    </footer>
+
+    <!-- Modal de información de copyright -->
+    <div id="copyright-modal" class="copyright-modal">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-4 transition-colors">
+            <h3 class="text-xl font-bold text-primary-light dark:text-primary-dark mb-4 transition-colors">Información Legal</h3>
+            <div class="text-sm space-y-3">
+                <p><strong>Copyright © Gabriel Alejandro Pereyra 2025. Todos los derechos reservados.</strong></p>
+                <p>"Ronda de Mate" - Aplicación para controlar rondas de mate<br>Versión 1.0</p>
+                <p>Esta aplicación, incluyendo su código fuente, diseño, funcionalidad, concepto y elementos visuales, está protegida por leyes de propiedad intelectual y derechos de autor.</p>
+                <p>Queda prohibida la reproducción, distribución, modificación, ingeniería inversa, o creación de obras derivadas sin autorización expresa por escrito del autor.</p>
+                <p>Desarrollado en Argentina.<br>Fecha de creación: 10 de abril de 2025</p>
+            </div>
+            <div class="mt-6 text-center">
+                <button id="close-copyright-btn" class="bg-primary-light dark:bg-primary-dark hover:bg-accent-light dark:hover:bg-accent-dark text-white font-medium py-2 px-4 rounded transition-colors">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para preguntar quién dijo gracias -->
+    <div id="thanks-modal" class="thanks-modal">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg max-w-md mx-4 transition-colors thanks-modal-content">
+            <h3 class="text-xl font-bold text-primary-light dark:text-primary-dark mb-4 transition-colors">¿Quién dijo gracias?</h3>
+            <p class="mb-4">Selecciona quién terminó su mate:</p>
+            
+            <div id="thanks-participants" class="space-y-2 max-h-60 overflow-y-auto mb-4">
+                <!-- Aquí se generarán los participantes -->
+            </div>
+            
+            <div class="mt-6 flex justify-between">
+                <button id="cancel-thanks-btn" class="bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-800 dark:text-white font-medium py-2 px-4 rounded transition-colors">
+                    Cancelar
+                </button>
+                <button id="continue-without-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded transition-colors">
+                    Continuar sin cambios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Datos de los participantes (inicialmente 3)
+            const participants = [
+                { id: 1, name: "Participante 1", preference: "amargo", turns: 0 },
+                { id: 2, name: "Participante 2", preference: "amargo", turns: 0 },
+                { id: 3, name: "Participante 3", preference: "amargo", turns: 0 }
+            ];
+            
+            // Variables de control
+            let currentIndex = 0;
+            let timerInterval;
+            let secondsLeft = 60;
+            let roundActive = false;
+            let nextId = 4; // Para asignar IDs a nuevos participantes
+            
+            // Variables para reconocimiento de voz
+            let recognition = null;
+            let isListening = false;
+            let recognitionRetryCount = 0;
+            const MAX_RETRY_COUNT = 3;
+            
+            // Referencias a elementos DOM
+            const setupDiv = document.getElementById('setup');
+            const roundDiv = document.getElementById('round-in-progress');
+            const statsDiv = document.getElementById('stats');
+            const participantsContainer = document.getElementById('participants-container');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const currentPersonDisplay = document.getElementById('current-person');
+            const preferenceDisplay = document.getElementById('preference-display');
+            const timerDisplay = document.getElementById('timer-display');
+            const timerBar = document.getElementById('timer-bar');
+            const queueDisplay = document.getElementById('queue-display');
+            const statsContainer = document.getElementById('stats-container');
+            const turnTimeSelect = document.getElementById('turn-time');
+            const addParticipantBtn = document.getElementById('add-participant-btn');
+            const copyrightModal = document.getElementById('copyright-modal');
+            const copyrightInfoBtn = document.getElementById('copyright-info-btn');
+            const closeCopyrightBtn = document.getElementById('close-copyright-btn');
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            const micIndicator = document.getElementById('mic-indicator');
+            const thanksModal = document.getElementById('thanks-modal');
+            const thanksParticipants = document.getElementById('thanks-participants');
+            const cancelThanksBtn = document.getElementById('cancel-thanks-btn');
+            const continueWithoutBtn = document.getElementById('continue-without-btn');
+            const currentTurnContainer = document.getElementById('current-turn-container');
+            const timerEndSound = document.getElementById('timer-end-sound');
+            const backgroundSound = document.getElementById('background-sound');
+            
+            // Configuración del tema
+            function setTheme(isDark) {
+                if (isDark) {
+                    htmlElement.classList.add('dark');
+                    htmlElement.classList.remove('light');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    htmlElement.classList.add('light');
+                    htmlElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+            
+            // Verificar preferencia guardada
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                setTheme(true);
+                themeToggle.checked = true;
+            } else {
+                setTheme(false);
+                themeToggle.checked = false;
+            }
+            
+            // Cambiar tema
+            themeToggle.addEventListener('change', function() {
+                setTheme(this.checked);
+            });
+            
+            // Funcionalidad del modal de copyright
+            copyrightInfoBtn.addEventListener('click', function() {
+                copyrightModal.classList.add('active');
+            });
+            
+            closeCopyrightBtn.addEventListener('click', function() {
+                copyrightModal.classList.remove('active');
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            copyrightModal.addEventListener('click', function(e) {
+                if (e.target === copyrightModal) {
+                    copyrightModal.classList.remove('active');
+                }
+            });
+            
+            // Inicializar reconocimiento de voz si está disponible
+            function initSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    recognition = new SpeechRecognition();
+                    recognition.lang = 'es-ES';
+                    recognition.continuous = true;
+                    recognition.interimResults = false;
+                    
+                    recognition.onstart = function() {
+                        isListening = true;
+                        micIndicator.style.display = 'flex';
+                        recognitionRetryCount = 0;
+                    };
+                    
+                    recognition.onend = function() {
+                        isListening = false;
+                        
+                        // Si la ronda sigue activa, reiniciar el reconocimiento automáticamente
+                        if (roundActive) {
+                            if (recognitionRetryCount < MAX_RETRY_COUNT) {
+                                recognitionRetryCount++;
+                                console.log(`Reconexión automática del micrófono (intento ${recognitionRetryCount})`);
+                                setTimeout(() => {
+                                    startListening();
+                                }, 1000);
+                            } else {
+                                console.error('Demasiados intentos de reconexión del micrófono');
+                                micIndicator.innerHTML = `
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="text-xs text-red-500">Error de micrófono - Reinicia la ronda</span>
+                                `;
+                            }
+                        }
+                    };
+                    
+                    recognition.onresult = function(event) {
+                        const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
+                        console.log("Reconocido: ", transcript);
+                        
+                        if (transcript.includes('gracias')) {
+                            showThanksModal();
+                        }
+                    };
+                    
+                    recognition.onerror = function(event) {
+                        console.error('Error de reconocimiento de voz:', event.error);
+                        
+                        // Si hay un error, intentar reiniciar el reconocimiento
+                        if (roundActive && recognitionRetryCount < MAX_RETRY_COUNT) {
+                            recognitionRetryCount++;
+                            console.log(`Error de reconocimiento. Reintentando (${recognitionRetryCount})`);
+                            setTimeout(() => {
+                                startListening();
+                            }, 2000);
+                        } else if (recognitionRetryCount >= MAX_RETRY_COUNT) {
+                            console.error('Demasiados errores de reconocimiento');
+                            micIndicator.innerHTML = `
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                <span class="text-xs text-red-500">Error de micrófono - Reinicia la ronda</span>
+                            `;
+                        }
+                    };
+                    
+                    return true;
+                } else {
+                    console.warn('El reconocimiento de voz no está soportado en este navegador');
+                    micIndicator.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-xs text-red-500">Tu navegador no soporta reconocimiento de voz</span>
+                    `;
+                    return false;
+                }
+            }
+            
+            // Iniciar escucha
+            function startListening() {
+                if (recognition) {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.error('Error al iniciar el reconocimiento de voz:', e);
+                        
+                        // Si hay un error al iniciar, intentar reiniciar después de un tiempo
+                        if (roundActive && recognitionRetryCount < MAX_RETRY_COUNT) {
+                            recognitionRetryCount++;
+                            setTimeout(() => {
+                                startListening();
+                            }, 2000);
+                        }
+                    }
+                }
+            }
+            
+            // Detener escucha
+            function stopListening() {
+                if (recognition && isListening) {
+                    try {
+                        recognition.stop();
+                    } catch (e) {
+                        console.error('Error al detener el reconocimiento de voz:', e);
+                    }
+                }
+                micIndicator.style.display = 'none';
+            }
+            
+            // Mostrar modal para seleccionar quién dijo gracias
+            function showThanksModal() {
+                thanksParticipants.innerHTML = '';
+                
+                participants.forEach(person => {
+                    const personBtn = document.createElement('button');
+                    personBtn.className = 'w-full text-left p-3 mb-2 bg-secondary-light dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-gray-600 rounded transition-colors';
+                    personBtn.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span>${person.name}</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">${person.preference}</span>
+                        </div>
+                    `;
+                    personBtn.addEventListener('click', function() {
+                        askToLeaveRound(person);
+                    });
+                    thanksParticipants.appendChild(personBtn);
+                });
+                
+                thanksModal.classList.add('active');
+            }
+            
+            // Preguntar si quiere abandonar la ronda
+            function askToLeaveRound(person) {
+                // Limpiar el contenido actual
+                thanksParticipants.innerHTML = '';
+                
+                const confirmDiv = document.createElement('div');
+                confirmDiv.className = 'text-center';
+                confirmDiv.innerHTML = `
+                    <p class="mb-4">¿<strong>${person.name}</strong> desea abandonar la ronda?</p>
+                    <div class="flex justify-center space-x-4">
+                        <button id="leave-yes-btn" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition-colors">
+                            Sí, abandonar
+                        </button>
+                        <button id="leave-no-btn" class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded transition-colors">
+                            No, continuar
+                        </button>
+                    </div>
+                `;
+                thanksParticipants.appendChild(confirmDiv);
+                
+                // Agregar event listeners
+                document.getElementById('leave-yes-btn').addEventListener('click', function() {
+                    removeParticipantFromRound(person.id);
+                    thanksModal.classList.remove('active');
+                });
+                
+                document.getElementById('leave-no-btn').addEventListener('click', function() {
+                    thanksModal.classList.remove('active');
+                });
+            }
+            
+            // Eliminar participante de la ronda
+            function removeParticipantFromRound(id) {
+                // Verificar que queden al menos 2 participantes
+                if (participants.length <= 2) {
+                    alert("No se puede eliminar más participantes. Se necesitan al menos 2 para continuar la ronda.");
+                    return;
+                }
+                
+                const index = participants.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    // Si es el participante actual, pasar al siguiente antes de eliminar
+                    if (index === currentIndex) {
+                        nextPerson();
+                    }
+                    
+                    // Ajustar el índice actual si es necesario
+                    if (index < currentIndex) {
+                        currentIndex--;
+                    }
+                    
+                    // Eliminar el participante
+                    participants.splice(index, 1);
+                    
+                    // Asegurarse de que el índice actual sea válido
+                    if (currentIndex >= participants.length) {
+                        currentIndex = 0;
+                    }
+                    
+                    // Actualizar la interfaz
+                    updateCurrentPerson();
+                    updateQueue();
+                    updateStats();
+                }
+            }
+            
+            // Generar campos de participantes
+            function generateParticipantFields() {
+                participantsContainer.innerHTML = '';
+                
+                participants.forEach((participant, index) => {
+                    const participantDiv = document.createElement('div');
+                    participantDiv.className = 'participant-card flex flex-col sm:flex-row sm:items-center sm:space-x-4 p-3 bg-secondary-light dark:bg-gray-700 rounded-lg relative transition-colors';
+                    participantDiv.dataset.id = participant.id;
+                    
+                    // Solo mostrar botón de eliminar si hay más de 2 participantes
+                    const removeButton = participants.length > 2 ? 
+                        `<button class="remove-participant absolute top-2 right-2 text-red-500 hover:text-red-700" data-id="${participant.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                            </svg>
+                        </button>` : '';
+                    
+                    participantDiv.innerHTML = `
+                        ${removeButton}
+                        <div class="flex-1 mb-2 sm:mb-0">
+                            <label class="block text-sm font-medium mb-1">Nombre:</label>
+                            <input type="text" value="${participant.name}" data-id="${participant.id}" class="name-input border dark:border-gray-600 rounded w-full p-2 bg-white dark:bg-gray-800 transition-colors" placeholder="Nombre">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium mb-1">Preferencia:</label>
+                            <select data-id="${participant.id}" class="preference-select border dark:border-gray-600 rounded w-full p-2 bg-white dark:bg-gray-800 transition-colors">
+                                <option value="amargo" ${participant.preference === 'amargo' ? 'selected' : ''}>Amargo</option>
+                                <option value="dulce" ${participant.preference === 'dulce' ? 'selected' : ''}>Dulce</option>
+                            </select>
+                        </div>
+                    `;
+                    participantsContainer.appendChild(participantDiv);
+                });
+                
+                // Agregar event listeners a los inputs
+                document.querySelectorAll('.name-input').forEach(input => {
+                    input.addEventListener('change', function() {
+                        const id = parseInt(this.dataset.id);
+                        const participant = participants.find(p => p.id === id);
+                        if (participant) participant.name = this.value;
+                    });
+                });
+                
+                document.querySelectorAll('.preference-select').forEach(select => {
+                    select.addEventListener('change', function() {
+                        const id = parseInt(this.dataset.id);
+                        const participant = participants.find(p => p.id === id);
+                        if (participant) participant.preference = this.value;
+                    });
+                });
+                
+                // Agregar event listeners a los botones de eliminar
+                document.querySelectorAll('.remove-participant').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        removeParticipant(id);
+                    });
+                });
+            }
+            
+            // Agregar un nuevo participante
+            function addParticipant() {
+                const newParticipant = {
+                    id: nextId++,
+                    name: `Participante ${participants.length + 1}`,
+                    preference: "amargo",
+                    turns: 0
+                };
+                
+                participants.push(newParticipant);
+                generateParticipantFields();
+            }
+            
+            // Eliminar un participante
+            function removeParticipant(id) {
+                // No permitir menos de 2 participantes
+                if (participants.length <= 2) return;
+                
+                // Encontrar el elemento y agregar animación
+                const participantEl = document.querySelector(`.participant-card[data-id="${id}"]`);
+                if (participantEl) {
+                    participantEl.classList.add('removing');
+                    
+                    // Esperar a que termine la animación
+                    setTimeout(() => {
+                        const index = participants.findIndex(p => p.id === id);
+                        if (index !== -1) {
+                            participants.splice(index, 1);
+                            generateParticipantFields();
+                        }
+                    }, 300);
+                }
+            }
+            
+            // Iniciar la ronda
+            function startRound() {
+                // Verificar que haya al menos 2 participantes
+                if (participants.length < 2) {
+                    alert("Se necesitan al menos 2 participantes para iniciar la ronda.");
+                    return;
+                }
+                
+                // Actualizar nombres y preferencias desde los inputs
+                document.querySelectorAll('.name-input').forEach(input => {
+                    const id = parseInt(input.dataset.id);
+                    const participant = participants.find(p => p.id === id);
+                    if (participant) participant.name = input.value;
+                });
+                
+                document.querySelectorAll('.preference-select').forEach(select => {
+                    const id = parseInt(select.dataset.id);
+                    const participant = participants.find(p => p.id === id);
+                    if (participant) participant.preference = select.value;
+                });
+                
+                // Configurar tiempo
+                secondsLeft = parseInt(turnTimeSelect.value);
+                
+                // Cambiar vista
+                setupDiv.classList.add('hidden');
+                roundDiv.classList.remove('hidden');
+                statsDiv.classList.remove('hidden');
+                
+                // Iniciar con el primer participante
+                currentIndex = 0;
+                updateCurrentPerson();
+                updateQueue();
+                updateStats();
+                startTimer();
+                playBackgroundSound();
+                roundActive = true;
+                
+                // Inicializar y activar reconocimiento de voz automáticamente
+                if (initSpeechRecognition()) {
+                    startListening();
+                }
+            }
+            
+            // Actualizar persona actual
+            function updateCurrentPerson() {
+                const current = participants[currentIndex];
+                currentPersonDisplay.textContent = current.name;
+                preferenceDisplay.textContent = `Prefiere mate ${current.preference}`;
+                participants[currentIndex].turns++;
+            }
+            
+            // Actualizar cola de espera
+            function updateQueue() {
+                queueDisplay.innerHTML = '';
+                
+                for (let i = 1; i < participants.length; i++) {
+                    const queueIndex = (currentIndex + i) % participants.length;
+                    const person = participants[queueIndex];
+                    
+                    const personEl = document.createElement('div');
+                    personEl.className = 'bg-secondary-light dark:bg-gray-600 px-3 py-1 rounded-full text-sm transition-colors';
+                    personEl.textContent = person.name;
+                    queueDisplay.appendChild(personEl);
+                }
+            }
+            
+            // Actualizar estadísticas
+            function updateStats() {
+                statsContainer.innerHTML = '';
+                
+                participants.forEach(person => {
+                    const statEl = document.createElement('div');
+                    statEl.className = 'flex justify-between';
+                    statEl.innerHTML = `
+                        <span>${person.name}:</span>
+                        <span>${person.turns} turnos</span>
+                    `;
+                    statsContainer.appendChild(statEl);
+                });
+            }
+            
+            // Función para reproducir el sonido cuando termina el tiempo
+            function playTimerEndSound() {
+                // Intentar reproducir el sonido
+                try {
+                    // Reiniciar el audio para asegurarse de que comienza desde el principio
+                    timerEndSound.currentTime = 0;
+                    
+                    // Reproducir el sonido
+                    const playPromise = timerEndSound.play();
+                    
+                    // Manejar posibles errores o promesas rechazadas
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.error('Error al reproducir el sonido:', error);
+                            // Si hay un error al reproducir el sonido, mostrar una alerta visual
+                            flashTimeUpVisualAlert();
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error al intentar reproducir el sonido:', e);
+                    // Si hay una excepción, mostrar una alerta visual
+                    flashTimeUpVisualAlert();
+                }
+            }
+            
+            function playBackgroundSound() {
+                // Intentar reproducir el sonido
+                try {
+                    // Reiniciar el audio para asegurarse de que comienza desde el principio
+                    backgroundSound.currentTime = 0;
+                    
+                    // Reproducir el sonido
+                    const playPromise = backgroundSound.play();
+                    
+                    // Manejar posibles errores o promesas rechazadas
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.error('Error al reproducir el sonido:', error);
+                            // Si hay un error al reproducir el sonido, mostrar una alerta visual
+                            flashTimeUpVisualAlert();
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error al intentar reproducir el sonido:', e);
+                    // Si hay una excepción, mostrar una alerta visual
+                    flashTimeUpVisualAlert();
+                }
+            }
+
+            // Alerta visual cuando termina el tiempo (como respaldo si el audio falla)
+            function flashTimeUpVisualAlert() {
+                currentTurnContainer.classList.add('time-up-flash');
+                
+                // Quitar la clase después de la animación
+                setTimeout(() => {
+                    currentTurnContainer.classList.remove('time-up-flash');
+                }, 1500); // 3 flashes de 0.5s cada uno
+            }
+            
+            // Iniciar temporizador
+            function startTimer() {
+                clearInterval(timerInterval);
+                
+                const duration = parseInt(turnTimeSelect.value);
+                secondsLeft = duration;
+                updateTimerDisplay();
+                
+                timerInterval = setInterval(() => {
+                    secondsLeft--;
+                    updateTimerDisplay();
+                    
+                    if (secondsLeft <= 0) {
+                        clearInterval(timerInterval);
+                        
+                        // Reproducir sonido cuando termina el tiempo
+                        playTimerEndSound();
+                        
+                        // También mostrar alerta visual como respaldo
+                        flashTimeUpVisualAlert();
+                        
+                        // Esperar un momento antes de avanzar al siguiente
+                        setTimeout(() => {
+                        }, 2000); // Esperar 2 segundos para que se escuche el sonido
+                    }
+                }, 1000);
+            }
+            
+            // Actualizar visualización del temporizador
+            function updateTimerDisplay() {
+                timerDisplay.textContent = `${secondsLeft}s`;
+                const percentage = (secondsLeft / parseInt(turnTimeSelect.value)) * 100;
+                timerBar.style.width = `${percentage}%`;
+                
+                // Cambiar color según el tiempo restante
+                if (percentage > 60) {
+                    timerBar.classList.remove('bg-yellow-500', 'bg-red-500');
+                    timerBar.classList.add('bg-primary-light', 'dark:bg-primary-dark');
+                } else if (percentage > 30) {
+                    timerBar.classList.remove('bg-primary-light', 'dark:bg-primary-dark', 'bg-red-500');
+                    timerBar.classList.add('bg-yellow-500');
+                } else {
+                    timerBar.classList.remove('bg-primary-light', 'dark:bg-primary-dark', 'bg-yellow-500');
+                    timerBar.classList.add('bg-red-500');
+                }
+            }
+            
+            // Pasar al siguiente participante
+            function nextPerson() {
+                currentIndex = (currentIndex + 1) % participants.length;
+                updateCurrentPerson();
+                updateQueue();
+                updateStats();
+                startTimer();
+            }
+            
+            // Reiniciar la aplicación
+            function resetApp() {
+                clearInterval(timerInterval);
+                stopListening();
+                
+                // Reiniciar contadores
+                participants.forEach(p => p.turns = 0);
+                
+                // Volver a la configuración
+                setupDiv.classList.remove('hidden');
+                roundDiv.classList.add('hidden');
+                statsDiv.classList.add('hidden');
+                
+                roundActive = false;
+            }
+            
+            // Event listeners
+            startBtn.addEventListener('click', startRound);
+            resetBtn.addEventListener('click', resetApp);
+            nextBtn.addEventListener('click', nextPerson);
+            addParticipantBtn.addEventListener('click', addParticipant);
+            
+            // Event listeners para el modal de gracias
+            cancelThanksBtn.addEventListener('click', function() {
+                thanksModal.classList.remove('active');
+            });
+            
+            continueWithoutBtn.addEventListener('click', function() {
+                thanksModal.classList.remove('active');
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            thanksModal.addEventListener('click', function(e) {
+                if (e.target === thanksModal) {
+                    thanksModal.classList.remove('active');
+                }
+            });
+            
+            // Ocultar el indicador de micrófono inicialmente
+            micIndicator.style.display = 'none';
+            
+            // Inicializar
+            generateParticipantFields();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92ee284412708bc2',t:'MTc0NDQxMzAyNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
